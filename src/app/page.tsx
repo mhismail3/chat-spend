@@ -1,10 +1,53 @@
+import React, { useEffect, useState } from 'react';
+import AuthForm from '../components/AuthForm';
+import GoogleSignInButton from '../components/GoogleSignInButton';
+import SignOutButton from '../components/SignOutButton';
+import { supabase } from '../lib/supabase';
 import Image from "next/image";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setLoading(false);
+    };
+    getSession();
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        {!session ? (
+          <>
+            <AuthForm />
+            <GoogleSignInButton />
+          </>
+        ) : (
+          <>
+            <div style={{ textAlign: 'center', margin: '32px 0' }}>
+              <h3>Signed in as {session.user.email}</h3>
+              <SignOutButton />
+            </div>
+          </>
+        )}
+        {/* Default Next.js welcome content below */}
+        <div style={{ marginTop: 48 }}>
+          <h1>Welcome to ChatSpend</h1>
+          <p>This is your starting point. Authentication is now enabled.</p>
+        </div>
         <Image
           className={styles.logo}
           src="/next.svg"
