@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import AuthForm from '../components/AuthForm';
 import GoogleSignInButton from '../components/GoogleSignInButton';

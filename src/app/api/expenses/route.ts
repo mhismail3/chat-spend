@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ParsedExpense, parseExpenseWithOpenAI } from '@/lib/expenseParser';
+import { ParsedExpense, parseExpenseWithOpenAI } from '../../../lib/expenseParser';
 import { createServerClient } from '@supabase/ssr';
 
 export async function POST(req: NextRequest) {
